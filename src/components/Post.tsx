@@ -36,17 +36,6 @@ export function Post({author, content, publishedAt}: PostProps) {
     addSuffix: true
   })
 
-  const contentHtml = content.map(line => {
-    if (line.type === 'paragrapher') {
-      return '<p key='+line.content+'>'+line.content+'</p>'
-    }
-    if (line.type === 'link') {
-      return '<p key='+line.content+'><a href="#">' + line.content + '</a></p>'
-    }
-  })
-
-  const contentFormatted = {__html: contentHtml}
-
   function handleCreateNewComment(event: FormEvent) {
     event.preventDefault()
     setComments([...comments, newCommentText])
@@ -88,7 +77,17 @@ export function Post({author, content, publishedAt}: PostProps) {
             {publshedDateRelativeNow}
         </time>
       </header>
-      <div dangerouslySetInnerHTML={contentFormatted} className={styles.content}>
+
+      <div className={styles.content}>
+        {content.map((line, index) => {
+          if (line.type === 'paragrapher') {
+            return <p key={index}>{line.content}</p>
+          }
+          if (line.type === 'link') {
+            return <p key={index}><a href="#"> {line.content} </a></p>
+          }
+          return null
+        })}
       </div>
 
       <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
